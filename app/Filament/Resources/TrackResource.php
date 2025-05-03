@@ -87,7 +87,7 @@ class TrackResource extends Resource
                     ->disk('public')
                     ->directory('tracks')
                     ->preserveFilenames()
-                    ->acceptedFileTypes(['audio/mpeg', 'audio/mp3', 'audio/x-m4a']),
+                    ->acceptedFileTypes(['image/png','audio/mpeg', 'audio/mp3', 'audio/x-m4a']),
 
                 TextInput::make('duration')
                     ->numeric()

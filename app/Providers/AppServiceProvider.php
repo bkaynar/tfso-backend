@@ -2,35 +2,53 @@
 
 namespace App\Providers;
 
-use App\Models\Setting;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Request;
-
+use Illuminate\Support\Facades\Auth;
+use BezhanSalleh\FilamentLanguageSwitch\LanguageSwitch;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        $locale = Session::get('admin_locale', config('app.locale'));
-        $supported = ['tr', 'en', 'ru', 'he'];
+        $supportedLocales = ['tr', 'en', 'ru', 'he'];
+        $locale = 'en';
 
-        if (!in_array($locale, $supported)) {
-            $locale = config('app.fallback_locale');
+        if (Auth::check()) {
+            $locale = Auth::user()->locale;
         }
 
-        App::setLocale(Setting::get('panel_language', $locale));
+        // Eğer kullanıcı giriş yapmamışsa, session'ı temizle
+        if (!Auth::check()) {
+            Session::forget('filament_language_switch_locale');
+        }
+
+        // Session'da geçici dil tercihi varsa al
+        $locale = Session::get('filament_language_switch_locale', $locale);
+
+        // Fallback
+        if (!in_array($locale, $supportedLocales)) {
+            $locale = config('app.fallback_locale', 'en');
+        }
+
+        App::setLocale($locale);
+
+        LanguageSwitch::configureUsing(function (LanguageSwitch $switch) use ($supportedLocales) {
+            $switch
+                ->flags([
+                    'tr' => asset('assets/tr.svg'),
+                    'en' => asset('assets/en.svg'),
+                    'ru' => asset('assets/ru.svg'),
+                    'he' => asset('assets/he.svg'),
+                ])
+                ->locales($supportedLocales)
+                ->nativeLabel();
+        });
     }
 }

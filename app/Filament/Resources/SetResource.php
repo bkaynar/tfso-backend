@@ -6,6 +6,7 @@ use App\Models\Set;
 use Filament\Forms;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -64,6 +65,25 @@ class SetResource extends Resource
 
                         TextInput::make('name.he')
                             ->label(__('resources.fields.name').' (עברית)')
+                            ->required(),
+                    ])
+                    ->columnSpanFull(),
+                Grid::make(2)
+                    ->schema([
+                        Textarea::make('description.tr')
+                            ->label(__('resources.fields.description').' (Türkçe)')
+                            ->required(),
+
+                        Textarea::make('description.en')
+                            ->label(__('resources.fields.description').' (English)')
+                            ->required(),
+
+                        Textarea::make('description.ru')
+                            ->label(__('resources.fields.description').' (Русский)')
+                            ->required(),
+
+                        Textarea::make('description.he')
+                            ->label(__('resources.fields.description').' (עברית)')
                             ->required(),
                     ])
                     ->columnSpanFull(),
