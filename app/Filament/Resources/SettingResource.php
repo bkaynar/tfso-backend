@@ -47,7 +47,7 @@ class SettingResource extends Resource
                         'tr' => 'Türkçe',
                         'en' => 'English',
                         'ru' => 'Русский',
-                        'he' => 'עברית',
+                        'he' => 'עברית'
                     ])
                     ->required()
                     ->visible(fn ($record) => $record && $record->key === 'panel_language'),
