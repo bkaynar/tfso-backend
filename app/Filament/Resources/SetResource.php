@@ -91,6 +91,11 @@ class SetResource extends Resource
                 ->default(auth()->id());
         }
 
+        $schema[] = Select::make('category_id')
+            ->label('Kategori')
+            ->relationship('category', 'name')
+            ->required();
+
         return $form->schema($schema);
     }
 

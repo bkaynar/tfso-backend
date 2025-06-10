@@ -19,6 +19,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
+use Illuminate\Support\Facades\Auth;
 
 class TrackResource extends Resource
 {
@@ -94,7 +95,7 @@ class TrackResource extends Resource
         ];
 
         // Kullanıcı rolüne göre user_id alanı
-        if (auth()->user()?->hasRole('admin')) {
+        if (Auth::user()?->hasRole('admin')) {
             // Admin için: DJ seçimi
             $schema[] = Select::make('user_id')
                 ->label('DJ')
@@ -107,8 +108,14 @@ class TrackResource extends Resource
         } else {
             // DJ için: Kendi ID'sini gizli alan olarak ekle
             $schema[] = Hidden::make('user_id')
-                ->default(auth()->id());
+                ->default(Auth::id());
         }
+
+        // Kategori seçimi
+        $schema[] = Select::make('category_id')
+            ->label('Kategori')
+            ->relationship('category', 'name')
+            ->required();
 
         return $form->schema($schema);
     }
@@ -121,29 +128,29 @@ class TrackResource extends Resource
                     ->label('Ad'),
                 TextColumn::make('user.name')
                     ->label('DJ')
-                    ->visible(auth()->user()?->hasRole('admin')), // Sadece admin görsün
+                    ->visible(Auth::user()?->hasRole('admin')), // Sadece admin görsün
                 ToggleColumn::make('is_premium')
                     ->label('Premium'),
             ])
             ->defaultSort('created_at', 'desc')
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->visible(fn($record) => auth()->user()->hasRole('admin') || $record->user_id === auth()->id()),
+                    ->visible(fn($record) => Auth::user()?->hasRole('admin') || $record->user_id === Auth::id()),
             ]);
     }
 
     public static function canViewAny(): bool
     {
-        return auth()->user()?->hasRole('dj') || auth()->user()?->hasRole('admin');
+        return Auth::user()?->hasRole('dj') || Auth::user()?->hasRole('admin');
     }
 
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         $query = parent::getEloquentQuery();
 
-        if (auth()->user()?->hasRole('dj')) {
+        if (Auth::user()?->hasRole('dj')) {
             // DJ ise sadece kendi verisini görecek
-            $query->where('user_id', auth()->id());
+            $query->where('user_id', Auth::id());
         }
 
         return $query;
