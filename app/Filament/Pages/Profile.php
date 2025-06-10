@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Filament\Pages;
 
 use Filament\Pages\Page;
@@ -14,7 +15,19 @@ class Profile extends Page implements Forms\Contracts\HasForms
     use Forms\Concerns\InteractsWithForms;
     use Forms\Concerns\InteractsWithForms;
     protected static ?string $navigationIcon = 'heroicon-o-user-circle';
-    protected static ?string $navigationLabel = 'Profilim';
+    public static function getNavigationLabel(): string
+    {
+        return __('resources.resources.profile.label');
+    }
+    public static function getModelLabel(): string
+    {
+        return __('resources.resources.profile.singular');
+    }
+    public static function getPluralModelLabel(): string
+    {
+        return __('resources.resources.profile.plural');
+    }
+    
     protected static ?string $slug = 'profile';
     protected static string $view = 'filament.pages.profile';
 

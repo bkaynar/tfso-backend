@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class MySetsStatsChart extends ChartWidget
 {
-    protected static ?string $heading = 'Benim Setlerimin Dinlenme Süreleri';
+    protected static ?string $heading = 'Benim Setlerimin Dinlenme Sayıları';
     protected static ?string $maxHeight = '300px';
 
     protected function getData(): array
@@ -21,21 +21,20 @@ class MySetsStatsChart extends ChartWidget
 
         $sets = Set::where('user_id', $user->id)->get();
         $labels = [];
-        $minutes = [];
+        $listenCounts = [];
         foreach ($sets as $set) {
-            // Set modelinde duration yoksa 0 olarak al
-            $totalSeconds = AccessLog::where('content_type', 'set')
+            $count = AccessLog::where('content_type', 'set')
                 ->where('content_id', $set->id)
-                ->count() * ($set->duration ?? 0);
+                ->count();
             $labels[] = $set->name;
-            $minutes[] = round($totalSeconds / 60, 2);
+            $listenCounts[] = $count;
         }
 
         return [
             'datasets' => [
                 [
-                    'label' => 'Toplam Dinlenme (dk)',
-                    'data' => $minutes,
+                    'label' => 'Dinlenme Sayısı',
+                    'data' => $listenCounts,
                     'backgroundColor' => '#4ade80',
                 ],
             ],

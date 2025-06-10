@@ -43,6 +43,11 @@ return [
             'singular' => 'Категория',
             'plural' => 'Категории',
         ],
+        'profile' => [
+            'label' => 'Профиль',
+            'singular' => 'Профиль',
+            'plural' => 'Профили',
+        ],
     ],
     'fields' => [
         'name' => 'Имя',

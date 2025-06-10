@@ -21,10 +21,11 @@ return [
         'tracks' => ['label' => 'Tracks', 'singular' => 'Track', 'plural' => 'Tracks'],
         'radios' => ['label' => 'Radios', 'singular' => 'Radio', 'plural' => 'Radios'],
         'settings' => ['label' => 'Settings', 'singular' => 'Setting', 'plural' => 'Settings'],
-        'categories' => [
-            'label' => 'Categories',
-            'singular' => 'Category',
-            'plural' => 'Categories',
+        'categories' => ['label' => 'Categories','singular' => 'Category','plural' => 'Categories'],
+        'profile' => [
+            'label' => 'Profile',
+            'singular' => 'Profile',
+            'plural' => 'Profiles',
         ],
     ],
     'fields' => [

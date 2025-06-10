@@ -22,6 +22,11 @@ return [
             'singular' => 'Kategori',
             'plural' => 'Kategoriler',
         ],
+        'profile' => [
+            'label' => 'Profil',
+            'singular' => 'Profil',
+            'plural' => 'Profiller',
+        ],
     ],
     'fields' => [
         'name' => 'Ad',

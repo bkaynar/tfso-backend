@@ -21,6 +21,11 @@ return [
             'singular' => 'קטגוריה',
             'plural' => 'קטגוריות',
         ],
+        'profile' => [
+            'label' => 'פרופיל',
+            'singular' => 'פרופיל',
+            'plural' => 'פרופילים',
+        ],
     ],
     'fields' => [
         'name' => 'שם',

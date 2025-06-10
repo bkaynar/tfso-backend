@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class MyTracksStatsChart extends ChartWidget
 {
-    protected static ?string $heading = 'Benim Parçalarımın Dinlenme Süreleri';
+    protected static ?string $heading = 'Benim Parçalarımın Dinlenme Sayıları';
     protected static ?string $maxHeight = '300px';
 
     protected function getData(): array
@@ -21,20 +21,20 @@ class MyTracksStatsChart extends ChartWidget
 
         $tracks = Track::where('user_id', $user->id)->get();
         $labels = [];
-        $minutes = [];
+        $listenCounts = [];
         foreach ($tracks as $track) {
-            $totalSeconds = AccessLog::where('content_type', 'track')
+            $count = AccessLog::where('content_type', 'track')
                 ->where('content_id', $track->id)
-                ->count() * ($track->duration ?? 0);
+                ->count();
             $labels[] = $track->name;
-            $minutes[] = round($totalSeconds / 60, 2);
+            $listenCounts[] = $count;
         }
 
         return [
             'datasets' => [
                 [
-                    'label' => 'Toplam Dinlenme (dk)',
-                    'data' => $minutes,
+                    'label' => 'Dinlenme Sayısı',
+                    'data' => $listenCounts,
                     'backgroundColor' => '#6366f1',
                 ],
             ],
