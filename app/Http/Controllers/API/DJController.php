@@ -147,56 +147,7 @@ class DJController extends Controller
     return response()->json($response);
 }
 
-    public function update(Request $request, $id)
-    {
-        // Yalnızca belirli rollere sahip kullanıcıların DJ güncellemesine izin ver
-        // if (!auth()->user()->hasRole('admin')) {
-        //     return response()->json(['message' => 'Unauthorized'], 403);
-        // }
-
-        $dj = User::role('dj')->find($id);
-
-        if (!$dj) {
-            return response()->json(['message' => 'DJ not found'], 404);
-        }
-
-        $validator = Validator::make($request->all(), [
-            'name' => 'sometimes|required|string|max:255',
-            'email' => ['sometimes', 'required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($dj->id)],
-            'password' => 'nullable|string|min:8', // Password nullable olabilir
-            'profile_photo' => 'nullable|string|max:255',
-            'bio' => 'nullable|string',
-            'instagram' => 'nullable|string|max:255',
-            'twitter' => 'nullable|string|max:255',
-            'facebook' => 'nullable|string|max:255',
-            'tiktok' => 'nullable|string|max:255',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $data = $request->only([
-            'name',
-            'email',
-            'profile_photo',
-            'bio',
-            'instagram',
-            'twitter',
-            'facebook',
-            'tiktok'
-        ]);
-
-        // Eğer şifre güncelleniyorsa, hash'le
-        if ($request->filled('password')) {
-            $data['password'] = Hash::make($request->password);
-        }
-
-        $dj->update($data);
-
-        return response()->json($dj);
-    }
-
+   
 
     public function destroy($id)
     {

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
@@ -48,7 +49,7 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-               TextInput::make('name')
+                TextInput::make('name')
                     ->label(__('resources.fields.name'))
                     ->required()
                     ->maxLength(255)
@@ -69,8 +70,12 @@ class UserResource extends Resource
                 TextInput::make('tiktok')->nullable(),
                 TextInput::make('soundcloud')->nullable(),
                 TextInput::make('email')->email()->required(),
-                TextInput::make('password')->password()->nullable()->minLength(4)
+                TextInput::make('password')
+                    ->password()
+                    ->nullable()
+                    ->minLength(4)
                     ->dehydrateStateUsing(fn($state) => !empty($state) ? bcrypt($state) : null)
+                    ->dehydrated(fn($state) => !empty($state)) // Şifre boşsa güncellemeye dahil etme
                     ->label('Şifre'),
             ]);
     }
@@ -88,7 +93,8 @@ class UserResource extends Resource
                         return is_array($record->name)
                             ? ($record->name[$locale] ?? array_values($record->name)[0] ?? '-')
                             : $record->name;
-                    }),                TextColumn::make('email'),
+                    }),
+                TextColumn::make('email'),
             ])
             ->defaultSort('created_at', 'asc')
             ->actions([
