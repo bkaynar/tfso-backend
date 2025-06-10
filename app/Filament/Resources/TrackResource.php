@@ -46,52 +46,22 @@ class TrackResource extends Resource
     {
         $schema = [
             // Ortak alanlar
-            Grid::make(2)
-                ->schema([
-                    TextInput::make('name.tr')
-                        ->label(__('resources.fields.name') . ' (Türkçe)')
-                        ->required(),
-                    TextInput::make('name.en')
-                        ->label(__('resources.fields.name') . ' (English)')
-                        ->required(),
-                    TextInput::make('name.ru')
-                        ->label(__('resources.fields.name') . ' (Русский)')
-                        ->required(),
-                    TextInput::make('name.he')
-                        ->label(__('resources.fields.name') . ' (עברית)')
-                        ->required(),
-                ])
-                ->columnSpanFull(),
-            Grid::make(2)
-                ->schema([
-                    TextInput::make('description.tr')
-                        ->label(__('resources.fields.description') . ' (Türkçe)')
-                        ->required(),
-                    TextInput::make('description.en')
-                        ->label(__('resources.fields.description') . ' (English)')
-                        ->required(),
-                    TextInput::make('description.ru')
-                        ->label(__('resources.fields.description') . ' (Русский)')
-                        ->required(),
-                    TextInput::make('description.he')
-                        ->label(__('resources.fields.description') . ' (עברית)')
-                        ->required(),
-                ])
-                ->columnSpanFull(),
+          TextInput::make('name')
+                ->label(__('resources.fields.name'))
+                ->required(),
+            TextInput::make('description')
+                ->label(__('resources.fields.description'))
+                ->required()
+                ->maxLength(500),
             FileUpload::make('audio_file')
                 ->label('Parça Dosyası')
                 ->disk('public')
                 ->directory('tracks')
                 ->preserveFilenames()
                 ->acceptedFileTypes(['audio/mpeg', 'audio/mp3', 'audio/x-m4a']),
-            TextInput::make('duration')
-                ->numeric()
-                ->label('Süre (saniye)'),
             Toggle::make('is_premium')
                 ->label('Premium'),
-            TextInput::make('iap_product_id')
-                ->label('IAP Ürün Kodu')
-                ->nullable(),
+     
         ];
 
         // Kullanıcı rolüne göre user_id alanı

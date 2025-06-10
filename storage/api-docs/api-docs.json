@@ -347,18 +347,6 @@
                     "tiktok": {
                         "description": "TikTok handle of the user",
                         "type": "string"
-                    },
-                    "created_at": {
-                        "description": "Creation timestamp of the user account",
-                        "type": "string",
-                        "format": "date-time",
-                        "readOnly": true
-                    },
-                    "updated_at": {
-                        "description": "Last update timestamp of the user account",
-                        "type": "string",
-                        "format": "date-time",
-                        "readOnly": true
                     }
                 },
                 "type": "object"

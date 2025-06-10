@@ -69,9 +69,6 @@ class SetResource extends Resource
                 ->maxSize(10240),
             Toggle::make('is_premium')
                 ->label('Premium Erişim'),
-            TextInput::make('iap_product_id')
-                ->label('IAP Ürün Kodu')
-                ->nullable(),
         ];
 
         // Kullanıcı rolüne göre user_id alanı
