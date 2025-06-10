@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\LanguageController;
+use App\Http\Controllers\Api\AccessLogController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,5 +17,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 Route::get('/available-languages', [LanguageController::class, 'supportedLanguages']);
 Route::get('/translations/all/{langCode}', [LanguageController::class, 'translations']);
 Route::middleware('auth:sanctum')->group(function () {
+
+    Route::get('/access-logs', [AccessLogController::class, 'index']);
 
 });

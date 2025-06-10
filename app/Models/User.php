@@ -9,6 +9,25 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\Translatable\HasTranslations;
 
+/*
+    * @OA\Schema(
+    *     schema="User",
+    *     title="User",
+    *     description="Model representing a user in the system",
+    *     @OA\Property(property="id", type="integer", format="int64", description="Unique identifier for the user", readOnly=true),
+    *     @OA\Property(property="name", type="string", description="Name of the user"),
+    *     @OA\Property(property="email", type="string", format="email", description="Email address of the user"),
+    *     @OA\Property(property="password", type="string", format="password", description="Password for the user account"),
+    *     @OA\Property(property="profile_photo", type="string", description="URL of the user's profile photo"),
+    *     @OA\Property(property="bio", type="string", description="Short biography of the user"),
+    *     @OA\Property(property="instagram", type="string", description="Instagram handle of the user"),
+    *     @OA\Property(property="twitter", type="string", description="Twitter handle of the user"),
+    *     @OA\Property(property="facebook", type="string", description="Facebook profile URL of the user"),
+    *     @OA\Property(property="tiktok", type="string", description="TikTok handle of the user"),
+    *     @OA\Property(property="created_at", type="string", format="date-time", description="Creation timestamp of the user account", readOnly=true),
+    *     @OA\Property(property="updated_at", type="string", format="date-time", description="Last update timestamp of the user account", readOnly=true)
+    * )
+    */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles, HasTranslations;
@@ -24,9 +43,6 @@ class User extends Authenticatable
         'facebook',
         'tiktok',
     ];
-
-    public $translatable = ['name', 'bio'];
-
     protected $hidden = [
         'password',
         'remember_token',

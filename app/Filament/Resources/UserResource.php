@@ -48,41 +48,18 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Grid::make(2)
-                    ->schema([
-                        TextInput::make('name.tr')
-                            ->label(__('resources.fields.name').' (Türkçe)')
-                            ->required(),
-
-                        TextInput::make('name.en')
-                            ->label(__('resources.fields.name').' (English)')
-                            ->required(),
-
-                        TextInput::make('name.ru')
-                            ->label(__('resources.fields.name').' (Русский)')
-                            ->required(),
-
-                        TextInput::make('name.he')
-                            ->label(__('resources.fields.name').' (עברית)')
-                            ->required(),
-                    ])
-                    ->columnSpanFull(),
-                Grid::make(2)
-                    ->schema([
-                        TextInput::make('bio.tr')
-                            ->label(__('resources.fields.bio').' (Türkçe)'),
-
-                        TextInput::make('bio.en')
-                            ->label(__('resources.fields.bio').' (English)'),
-
-
-                        TextInput::make('bio.ru')
-                            ->label(__('resources.fields.bio').' (Русский)'),
-
-                        TextInput::make('bio.he')
-                            ->label(__('resources.fields.bio').' (עברית)')
-                    ])
-                    ->columnSpanFull(),
+               TextInput::make('name')
+                    ->label(__('resources.fields.name'))
+                    ->required()
+                    ->maxLength(255)
+                    ->dehydrateStateUsing(fn($state) => is_array($state) ? json_encode($state) : $state)
+                    ->reactive(),
+                TextInput::make('bio')
+                    ->label(__('resources.fields.bio'))
+                    ->nullable()
+                    ->maxLength(500)
+                    ->dehydrateStateUsing(fn($state) => is_array($state) ? json_encode($state) : $state)
+                    ->reactive(),
                 FileUpload::make('profile_photo')->label('Profil Fotoğrafı')->image()->directory('users'),
                 FileUpload::make('cover_image')->label('Kapak Görseli')->image()->directory('users/covers'),
 
@@ -95,18 +72,6 @@ class UserResource extends Resource
                 TextInput::make('password')->password()->nullable()->minLength(4)
                     ->dehydrateStateUsing(fn($state) => !empty($state) ? bcrypt($state) : null)
                     ->label('Şifre'),
-                Select::make('role')
-                    ->label('Rol')
-                    ->options([
-                        'admin' => 'Admin',
-                        'dj' => 'DJ',
-                    ])
-                    ->required()
-                    ->afterStateHydrated(fn ($component, $record) => $component->state(
-                        $record?->roles->first()?->name ?? null
-                    ))
-                    ->dehydrated(false) // veritabanına yazılmaz, sadece işlem için
-                    ->columnSpanFull(),
             ]);
     }
 

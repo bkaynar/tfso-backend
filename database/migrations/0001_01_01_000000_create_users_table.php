@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->json('name');
-            $table->json('bio')->nullable();
+            $table->string('name');
+            $table->string('bio')->nullable();
             $table->string('profile_photo')->nullable();
             $table->string('instagram')->nullable();
             $table->string('twitter')->nullable();
