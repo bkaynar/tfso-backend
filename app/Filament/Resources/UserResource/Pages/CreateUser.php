@@ -15,9 +15,11 @@ class CreateUser extends CreateRecord
         return auth()->user()?->hasRole('admin');
     }
 
+    /*
     protected function afterCreate(): void
     {
         // Kullanıcıya DJ rolünü ata
         $this->record->assignRole('dj');
     }
+        */
 }

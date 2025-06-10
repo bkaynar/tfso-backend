@@ -97,6 +97,12 @@ class UserResource extends Resource
                     ->dehydrateStateUsing(fn($state) => !empty($state) ? bcrypt($state) : null)
                     ->dehydrated(fn($state) => !empty($state)) // Şifre boşsa güncellemeye dahil etme
                     ->label('Şifre'),
+                Select::make('roles')
+                    ->label('Rol')
+                    ->multiple()
+                    ->relationship('roles', 'name')
+                    ->options(\Spatie\Permission\Models\Role::pluck('name', 'id')->toArray())
+                    ->required(),
             ]);
     }
 
@@ -120,6 +126,18 @@ class UserResource extends Resource
                 TextColumn::make('roles.name')
                     ->label('Rol')
                     ->visible(auth()->user()?->hasRole('admin')),
+            ])
+            ->filters([
+                Tables\Filters\SelectFilter::make('role')
+                    ->label('Rol')
+                    ->options(\Spatie\Permission\Models\Role::pluck('name', 'name')->toArray())
+                    ->query(function (\Illuminate\Database\Eloquent\Builder $query, array $data) {
+                        if (!empty($data['value'])) {
+                            $query->whereHas('roles', function ($q) use ($data) {
+                                $q->where('name', $data['value']);
+                            });
+                        }
+                    }),
             ])
             ->defaultSort('created_at', 'asc')
             ->actions([
