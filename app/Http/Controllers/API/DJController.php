@@ -58,6 +58,8 @@ class DJController extends Controller
         return response()->json($djs);
     }
 
+    
+
 
     public function store(Request $request)
     {
@@ -95,18 +97,55 @@ class DJController extends Controller
         return response()->json($dj, 201);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/djs/{id}",
+     *     summary="Get a DJ by ID",
+     *     tags={"DJs"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the DJ",
+     *         @OA\Schema(type="integer", format="int64")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="DJ details",
+     *         @OA\JsonContent(ref="#/components/schemas/User")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="DJ not found"
+     *     )
+     * )
+     */
+    
     public function show($id)
-    {
-        // Sadece 'dj' rolüne sahip kullanıcıları çek
-        $dj = User::role('dj')->find($id);
+{
+    // Sadece 'dj' rolüne sahip kullanıcıyı çek
+    $dj = User::role('dj')->find($id);
 
-        if (!$dj) {
-            return response()->json(['message' => 'DJ not found'], 404);
-        }
-
-        return response()->json($dj);
+    if (!$dj) {
+        return response()->json(['message' => 'DJ not found'], 404);
     }
 
+    // Sadece istenen alanları döndür
+    $response = [
+        'id' => $dj->id,
+        'name' => $dj->name,
+        'bio' => $dj->bio,
+        'profile_photo' => $dj->profile_photo ? url($dj->profile_photo) : null,
+        'social_media' => [
+            'instagram' => $dj->instagram ? "https://instagram.com/{$dj->instagram}" : null,
+            'twitter' => $dj->twitter ? "https://twitter.com/{$dj->twitter}" : null,
+            'facebook' => $dj->facebook ? $dj->facebook : null,
+            'tiktok' => $dj->tiktok ? "https://tiktok.com/@{$dj->tiktok}" : null,
+        ],
+    ];
+
+    return response()->json($response);
+}
 
     public function update(Request $request, $id)
     {

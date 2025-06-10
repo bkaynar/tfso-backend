@@ -136,6 +136,42 @@
                 }
             }
         },
+        "/api/djs/{id}": {
+            "get": {
+                "tags": [
+                    "DJs"
+                ],
+                "summary": "Get a DJ by ID",
+                "operationId": "140bd7a371f935db5cd37b764c3ba486",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the DJ",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "DJ details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "DJ not found"
+                    }
+                }
+            }
+        },
         "/api/sets": {
             "get": {
                 "tags": [
