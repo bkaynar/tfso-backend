@@ -1,8 +1,10 @@
 <?php
+
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\SetResource\Pages;
 use App\Models\Set;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Hidden;
@@ -15,7 +17,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Repeater;
 use Filament\Support\Enums\Alignment;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
@@ -26,6 +27,7 @@ class SetResource extends Resource
     protected static ?string $model = Set::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-musical-note';
+
     public static function getNavigationLabel(): string
     {
         return __('resources.resources.sets.label');
@@ -43,62 +45,53 @@ class SetResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Hidden::make('user_id')
-                    ->default(auth()->id()),
+        $schema = [
+            // Ortak alanlar
+            TextInput::make('name')
+                ->label(__('resources.fields.name'))
+                ->required()
+                ->maxLength(255)
+                ->dehydrateStateUsing(fn($state) => is_array($state) ? json_encode($state) : $state)
+                ->reactive(),
+            TextInput::make('description')
+                ->label(__('resources.fields.description'))
+                ->nullable()
+                ->maxLength(500)
+                ->dehydrateStateUsing(fn($state) => is_array($state) ? json_encode($state) : $state)
+                ->reactive(),
+            FileUpload::make('cover_image')
+                ->image()
+                ->label('Kapak Görseli'),
+            FileUpload::make('audio_file')
+                ->label('Set Dosyası')
+                ->directory('sets')
+                ->acceptedFileTypes(['audio/mpeg', 'audio/wav'])
+                ->maxSize(10240),
+            Toggle::make('is_premium')
+                ->label('Premium Erişim'),
+            TextInput::make('iap_product_id')
+                ->label('IAP Ürün Kodu')
+                ->nullable(),
+        ];
 
-                // Çok dilli alan: name
-                Grid::make(2)
-                    ->schema([
-                        TextInput::make('name.tr')
-                            ->label(__('resources.fields.name').' (Türkçe)')
-                            ->required(),
+        // Kullanıcı rolüne göre user_id alanı
+        if (auth()->user()?->hasRole('admin')) {
+            // Admin için: DJ seçimi
+            $schema[] = Select::make('user_id')
+                ->label('DJ')
+                ->options(
+                    User::role('dj')->pluck('name', 'id')->toArray()
+                )
+                ->required()
+                ->searchable()
+                ->preload();
+        } else {
+            // DJ için: Kendi ID'sini gizli alan olarak ekle
+            $schema[] = Hidden::make('user_id')
+                ->default(auth()->id());
+        }
 
-                        TextInput::make('name.en')
-                            ->label(__('resources.fields.name').' (English)')
-                            ->required(),
-
-                        TextInput::make('name.ru')
-                            ->label(__('resources.fields.name').' (Русский)')
-                            ->required(),
-
-                        TextInput::make('name.he')
-                            ->label(__('resources.fields.name').' (עברית)')
-                            ->required(),
-                    ])
-                    ->columnSpanFull(),
-                Grid::make(2)
-                    ->schema([
-                        Textarea::make('description.tr')
-                            ->label(__('resources.fields.description').' (Türkçe)')
-                            ->required(),
-
-                        Textarea::make('description.en')
-                            ->label(__('resources.fields.description').' (English)')
-                            ->required(),
-
-                        Textarea::make('description.ru')
-                            ->label(__('resources.fields.description').' (Русский)')
-                            ->required(),
-
-                        Textarea::make('description.he')
-                            ->label(__('resources.fields.description').' (עברית)')
-                            ->required(),
-                    ])
-                    ->columnSpanFull(),
-                FileUpload::make('cover_image')
-                    ->image()
-                    ->label('Kapak Görseli'),
-                FileUpload::make('audio_file')
-                    ->label('Set Dosyası')
-                    ->directory('sets')
-                    ->acceptedFileTypes(['audio/mpeg', 'audio/wav'])
-                    ->maxSize(10240),
-
-                Toggle::make('is_premium')->label('Premium Erişim'),
-                TextInput::make('iap_product_id')->label('IAP Ürün Kodu')->nullable(),
-            ]);
+        return $form->schema($schema);
     }
 
     public static function table(Table $table): Table
@@ -113,11 +106,16 @@ class SetResource extends Resource
                             ? ($record->name[$locale] ?? array_values($record->name)[0] ?? '-')
                             : $record->name;
                     }),
-                ToggleColumn::make('is_premium')->label('Premium'),
+                TextColumn::make('user.name')
+                    ->label('DJ')
+                    ->visible(auth()->user()?->hasRole('admin')), // Sadece admin görsün
+                ToggleColumn::make('is_premium')
+                    ->label('Premium'),
             ])
             ->defaultSort('created_at', 'desc')
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->visible(fn($record) => auth()->user()->hasRole('admin') || $record->user_id === auth()->id()),
             ]);
     }
 
@@ -136,7 +134,6 @@ class SetResource extends Resource
 
         return $query;
     }
-
 
     public static function getPages(): array
     {

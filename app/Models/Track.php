@@ -19,8 +19,6 @@ class Track extends Model
         'iap_product_id',
     ];
 
-    public array $translatable = ['name', 'description'];
-
     public function user()
     {
         return $this->belongsTo(User::class);

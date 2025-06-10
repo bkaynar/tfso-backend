@@ -58,7 +58,7 @@ class DJController extends Controller
         return response()->json($djs);
     }
 
-    
+
 
 
     public function store(Request $request)
@@ -96,41 +96,86 @@ class DJController extends Controller
 
         return response()->json($dj, 201);
     }
-
-    /**
-     * @OA\Get(
-     *     path="/api/djs/{id}",
-     *     summary="Get a DJ by ID",
-     *     tags={"DJs"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         description="ID of the DJ",
-     *         @OA\Schema(type="integer", format="int64")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="DJ details",
-     *         @OA\JsonContent(ref="#/components/schemas/User")
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="DJ not found"
-     *     )
-     * )
-     */
-    
-    public function show($id)
+/**
+ * @OA\Get(
+ *     path="/api/djs/{id}",
+ *     summary="Get a specific DJ's details with recent sets and tracks",
+ *     tags={"DJs"},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         description="ID of the DJ",
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Details of the specified DJ with recent sets and tracks",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="id", type="integer", example=1),
+ *             @OA\Property(property="name", type="string", example="DJ Örnek"),
+ *             @OA\Property(property="bio", type="string", example="Enerjik setlerle dans pistini coşturuyorum!"),
+ *             @OA\Property(property="profile_photo", type="string", example="https://example.com/storage/users/photo.jpg"),
+ *             @OA\Property(
+ *                 property="social_media",
+ *                 type="object",
+ *                 @OA\Property(property="instagram", type="string", example="https://instagram.com/djornek"),
+ *                 @OA\Property(property="twitter", type="string", example="https://twitter.com/dj_ornek"),
+ *                 @OA\Property(property="facebook", type="string", example="https://facebook.com/djornek"),
+ *                 @OA\Property(property="tiktok", type="string", example="https://tiktok.com/@djornek")
+ *             ),
+ *             @OA\Property(
+ *                 property="sets",
+ *                 type="array",
+ *                 description="Last 3 sets of the DJ",
+ *                 @OA\Items(
+ *                     @OA\Property(property="id", type="integer", example=1),
+ *                     @OA\Property(property="name", type="string", example="Summer Vibes Mix"),
+ *                     @OA\Property(property="cover_image", type="string", example="https://example.com/storage/sets/cover.jpg"),
+ *                     @OA\Property(property="audio_file", type="string", example="https://example.com/storage/sets/audio.mp3")
+ *                 )
+ *             ),
+ *             @OA\Property(
+ *                 property="tracks",
+ *                 type="array",
+ *                 description="Last 3 tracks of the DJ",
+ *                 @OA\Items(
+ *                     @OA\Property(property="id", type="integer", example=1),
+ *                     @OA\Property(property="name", type="string", example="Epic Beat"),
+ *                     @OA\Property(property="audio_file", type="string", example="https://example.com/storage/tracks/audio.mp3"),
+ *                     @OA\Property(property="duration", type="integer", example=180)
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="DJ not found",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="DJ not found")
+ *         )
+ *     )
+ * )
+ */
+public function show($id)
 {
-    // Sadece 'dj' rolüne sahip kullanıcıyı çek
-    $dj = User::role('dj')->find($id);
+    // Sadece 'dj' rolüne sahip kullanıcıyı, son 3 set ve parça ile birlikte çek
+    $dj = User::role('dj')
+        ->with([
+            'sets' => function ($query) {
+                $query->latest()->take(3);
+            },
+            'tracks' => function ($query) {
+                $query->latest()->take(3);
+            }
+        ])
+        ->find($id);
 
     if (!$dj) {
         return response()->json(['message' => 'DJ not found'], 404);
     }
 
-    // Sadece istenen alanları döndür
+    // Yanıtı formatla
     $response = [
         'id' => $dj->id,
         'name' => $dj->name,
@@ -142,12 +187,28 @@ class DJController extends Controller
             'facebook' => $dj->facebook ? $dj->facebook : null,
             'tiktok' => $dj->tiktok ? "https://tiktok.com/@{$dj->tiktok}" : null,
         ],
+        'sets' => $dj->sets->map(function ($set) {
+            return [
+                'id' => $set->id,
+                'name' => $set->name,
+                'cover_image' => $set->cover_image ? url($set->cover_image) : null,
+                'audio_file' => $set->audio_file ? url($set->audio_file) : null,
+            ];
+        })->toArray(),
+        'tracks' => $dj->tracks->map(function ($track) {
+            return [
+                'id' => $track->id,
+                'name' => $track->name,
+                'audio_file' => $track->audio_file ? url($track->audio_file) : null,
+                'duration' => $track->duration,
+            ];
+        })->toArray(),
     ];
 
     return response()->json($response);
 }
 
-   
+
 
     public function destroy($id)
     {

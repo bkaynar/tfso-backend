@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('tracks', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->json('name');
-            $table->json('description')->nullable();
+            $table->string('name');
+            $table->string('description')->nullable();
             $table->string('audio_file'); // mp3/m4a vs.
             $table->integer('duration')->nullable(); // saniye cinsinden
             $table->boolean('is_premium')->default(false);

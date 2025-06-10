@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('sets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->json('name');
-            $table->json('description')->nullable();
+            $table->string('name');
+            $table->string('description')->nullable();
             $table->string('cover_image')->nullable();
             $table->string('audio_file')->nullable(); // 🎧 dosya yolu
             $table->boolean('is_premium')->default(false); // Premium kullanıcılar için mi?

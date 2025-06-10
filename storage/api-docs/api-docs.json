@@ -141,7 +141,7 @@
                 "tags": [
                     "DJs"
                 ],
-                "summary": "Get a DJ by ID",
+                "summary": "Get a specific DJ's details with recent sets and tracks",
                 "operationId": "140bd7a371f935db5cd37b764c3ba486",
                 "parameters": [
                     {
@@ -150,24 +150,125 @@
                         "description": "ID of the DJ",
                         "required": true,
                         "schema": {
-                            "type": "integer",
-                            "format": "int64"
+                            "type": "integer"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "DJ details",
+                        "description": "Details of the specified DJ with recent sets and tracks",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/User"
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "DJ Örnek"
+                                        },
+                                        "bio": {
+                                            "type": "string",
+                                            "example": "Enerjik setlerle dans pistini coşturuyorum!"
+                                        },
+                                        "profile_photo": {
+                                            "type": "string",
+                                            "example": "https://example.com/storage/users/photo.jpg"
+                                        },
+                                        "social_media": {
+                                            "properties": {
+                                                "instagram": {
+                                                    "type": "string",
+                                                    "example": "https://instagram.com/djornek"
+                                                },
+                                                "twitter": {
+                                                    "type": "string",
+                                                    "example": "https://twitter.com/dj_ornek"
+                                                },
+                                                "facebook": {
+                                                    "type": "string",
+                                                    "example": "https://facebook.com/djornek"
+                                                },
+                                                "tiktok": {
+                                                    "type": "string",
+                                                    "example": "https://tiktok.com/@djornek"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "sets": {
+                                            "description": "Last 3 sets of the DJ",
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Summer Vibes Mix"
+                                                    },
+                                                    "cover_image": {
+                                                        "type": "string",
+                                                        "example": "https://example.com/storage/sets/cover.jpg"
+                                                    },
+                                                    "audio_file": {
+                                                        "type": "string",
+                                                        "example": "https://example.com/storage/sets/audio.mp3"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "tracks": {
+                                            "description": "Last 3 tracks of the DJ",
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Epic Beat"
+                                                    },
+                                                    "audio_file": {
+                                                        "type": "string",
+                                                        "example": "https://example.com/storage/tracks/audio.mp3"
+                                                    },
+                                                    "duration": {
+                                                        "type": "integer",
+                                                        "example": 180
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
                     },
                     "404": {
-                        "description": "DJ not found"
+                        "description": "DJ not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "DJ not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
