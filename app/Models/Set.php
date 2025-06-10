@@ -35,6 +35,7 @@ class Set extends Model
         'audio_file', // 🎧 dosya yolu
         'is_premium',
         'iap_product_id',
+        'category_id',
     ];
 
     public function user()
@@ -45,5 +46,10 @@ class Set extends Model
     public function tracks()
     {
         return $this->hasMany(Track::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }

@@ -21,6 +21,11 @@ return [
         'tracks' => ['label' => 'Tracks', 'singular' => 'Track', 'plural' => 'Tracks'],
         'radios' => ['label' => 'Radios', 'singular' => 'Radio', 'plural' => 'Radios'],
         'settings' => ['label' => 'Settings', 'singular' => 'Setting', 'plural' => 'Settings'],
+        'categories' => [
+            'label' => 'Categories',
+            'singular' => 'Category',
+            'plural' => 'Categories',
+        ],
     ],
     'fields' => [
         'language' => 'Language',
@@ -36,4 +41,6 @@ return [
         'premium' => 'Premium',
         'description' => 'Description',
     ],
+
+
 ];

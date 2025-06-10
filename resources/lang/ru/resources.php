@@ -38,6 +38,11 @@ return [
             'singular' => 'Настройка',
             'plural' => 'Настройки',
         ],
+        'categories' => [
+            'label' => 'Категории',
+            'singular' => 'Категория',
+            'plural' => 'Категории',
+        ],
     ],
     'fields' => [
         'name' => 'Имя',

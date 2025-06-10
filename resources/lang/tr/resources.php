@@ -17,6 +17,11 @@ return [
         'tracks' => ['label' => 'Parçalar', 'singular' => 'Parça', 'plural' => 'Parçalar'],
         'radios' => ['label' => 'Radyolar', 'singular' => 'Radyo', 'plural' => 'Radyolar'],
         'settings' => ['label' => 'Ayarlar', 'singular' => 'Ayar', 'plural' => 'Ayarlar'],
+        'categories' => [
+            'label' => 'Kategoriler',
+            'singular' => 'Kategori',
+            'plural' => 'Kategoriler',
+        ],
     ],
     'fields' => [
         'name' => 'Ad',

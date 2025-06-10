@@ -16,6 +16,11 @@ return [
         'tracks' => ['label' => 'רצועות', 'singular' => 'רצועה', 'plural' => 'רצועות'],
         'radios' => ['label' => 'רדיו', 'singular' => 'רדיו', 'plural' => 'רדיו'],
         'settings' => ['label' => 'הגדרות', 'singular' => 'הגדרה', 'plural' => 'הגדרות'],
+        'categories' => [
+            'label' => 'קטגוריות',
+            'singular' => 'קטגוריה',
+            'plural' => 'קטגוריות',
+        ],
     ],
     'fields' => [
         'name' => 'שם',
