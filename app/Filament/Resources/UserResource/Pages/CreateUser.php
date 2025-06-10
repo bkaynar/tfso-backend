@@ -10,7 +10,12 @@ class CreateUser extends CreateRecord
 {
     protected static string $resource = UserResource::class;
 
-     protected function afterCreate(): void
+    public static function canAccess(array $parameters = []): bool
+    {
+        return auth()->user()?->hasRole('admin');
+    }
+
+    protected function afterCreate(): void
     {
         // Kullanıcıya DJ rolünü ata
         $this->record->assignRole('dj');

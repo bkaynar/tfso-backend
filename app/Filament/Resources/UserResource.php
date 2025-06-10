@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
@@ -131,7 +132,7 @@ class UserResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return auth()->user()?->hasRole('dj') || auth()->user()?->hasRole('admin');
+        return auth()->user()?->hasRole('admin');
     }
 
     public static function shouldRegisterNavigation(): bool
