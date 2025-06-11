@@ -66,9 +66,7 @@ class SetResource extends Resource
                 ->label('Set Dosyası')
                 ->directory('sets')
                 //mp3 ve wav dosyalarını kabul et
-                ->acceptedFileTypes(['audio/mpeg', 'audio/wav'])
-                //max size 200MB
-                ->maxSize(256000),
+                ->acceptedFileTypes(['audio/mpeg', 'audio/wav']),
             Toggle::make('is_premium')
                 ->label('Premium Erişim'),
         ];
