@@ -1,6 +1,8 @@
 <?php
 namespace App\Models;
 
+use Filament\Models\Contracts\FilamentUser; // Bu satırı ekleyin
+use Filament\Panel; // Bu satırı ekleyin
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -28,7 +30,7 @@ use Spatie\Translatable\HasTranslations;
     *     @OA\Property(property="updated_at", type="string", format="date-time", description="Last update timestamp of the user account", readOnly=true)
     * )
     */
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles, HasTranslations;
 
@@ -83,4 +85,20 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class, 'favorite_djs', 'user_id', 'favorited_user_id')->withTimestamps();
     }
 
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        // Spatie Roles kullanarak "admin" rolüne sahip kullanıcıların erişimini sağlayın.
+        // Bu, en güvenli ve önerilen yaklaşımdır.
+        return $this->hasRole('admin' || 'dj');
+
+        // Eğer birden fazla role sahip kullanıcıların erişmesini istiyorsanız:
+        // return $this->hasAnyRole(['admin', 'editor']);
+
+        // Veya sadece belirli bir e-posta alan adına sahip kullanıcıların erişmesini istiyorsanız (daha az güvenli):
+        // return str_ends_with($this->email, '@yourdomain.com');
+
+        // DİKKAT: Aşağıdaki satırı üretim ortamında KULLANMAYIN!
+        // return true; // Bu, herkesin paneli görmesine izin verir ve güvenlik açığıdır.
+    }
 }
